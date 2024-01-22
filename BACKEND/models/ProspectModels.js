@@ -1,395 +1,235 @@
 import { Sequelize } from "sequelize";
-import db from '../config/Database.js';
+import db from "../config/Database.js";
 import About from "./AboutModels.js";
 
+const { DataTypes } = Sequelize;
 
-const  {DataTypes} = Sequelize;
+const Prospect = db.define(
+  "prospect",
+  {
+    uuid: {
+      type: DataTypes.STRING,
+      defaultValue: DataTypes.UUIDV4,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
+    prospectid: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      defaultValue: "EVLI",
+    },
+    surnameg: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    forenamesg: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    genderg: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    dateofbirthg: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    placeofbirthg: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    citizenshipg: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    occupationg: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    emailg: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    telhomeg: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    telghanag: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    addresshomeg: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    addressghanag: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    maritalg: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    passportidg: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    academicg: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    noteg: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    passportphotographg: {
+      type: DataTypes.STRING,
+      allowNull: true,
 
-const Prospect = db.define('prospect', {
-    uuid:{
-        type: DataTypes.STRING,
-        defaultValue: DataTypes.UUIDV4,
-        allowNull: false,
-        validate: {
-            notEmpty: true
-        }
+      required: false,
     },
-    prospectid:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        defaultValue: "EVLI",
-        validate: {
-            notEmpty: false
-        }
+    idscang: {
+      type: DataTypes.STRING,
+      allowNull: true,
+
+      required: false,
     },
-    surnameg:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate:{
-            notEmpty: false,
-            len: [3, 100]
-        }
+    surnamee: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
-    forenamesg:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate:{
-            notEmpty: false,
-            len: [3, 100]
-        }
+    forenamese: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
-    genderg:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate:{
-            notEmpty: false,
-            len: [3, 100]
-        }
+    gendere: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
-    dateofbirthg:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate:{
-            notEmpty: false,
-            len: [3, 100] 
-        }
+    relationshipe: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
-    placeofbirthg:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate:{
-            notEmpty: false,
-            len: [3, 100]
-        }
+    occupatione: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
-    citizenshipg:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate:{
-            notEmpty: false,
-            len: [3, 100]
-        }
+    emaile: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
-    occupationg:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate:{
-            notEmpty: false,
-            len: [3, 100]
-        }
+    tel1e: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
-    emailg:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate:{
-            notEmpty: false,
-        }
+    tel2e: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
-    telhomeg:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate:{
-            notEmpty: false,
-        }
+    addresse: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
-    telghanag:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate:{
-            notEmpty: false,
-        }
+    surnamep: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
-    addresshomeg:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate:{
-            notEmpty: false,
-        }
+    forenamesp: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
-    addressghanag:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate:{
-            notEmpty: false,
-        }
+    genderp: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
-    maritalg:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate:{
-            notEmpty: false,
-        }
+    relationshipp: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
-    passportidg:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate:{
-            notEmpty: false,
-    
-        }
+    occupationp: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
-    academicg:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate:{
-            notEmpty: false,
-            
-        }
+    emailp: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
-    noteg:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate:{
-            notEmpty: false,
-    
-        }
+    tel1p: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
-    passportphotographg:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate:{
-            notEmpty: false
-        },
-        required: false
+    tel2p: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
-    idscang:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate:{
-            notEmpty: false
-        },
-        required: false
+    addressp: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
-    surnamee:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate:{
-            notEmpty: false,
-            len: [3, 100]
-        }
+    nameo: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
-    forenamese:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate:{
-            notEmpty: false
-        }
+    addresso: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
-    gendere:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate:{
-            notEmpty: false,
-          
-        }
+    tel1o: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
-    relationshipe:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate:{
-            notEmpty: false,
-           
-        }
+    emailo: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
-    occupatione:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate:{
-            notEmpty: false
-        }
+    contacto: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
-    emaile:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate:{
-            notEmpty: false,
-            len: [3, 100]
-        }
+    tel2o: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
-    tel1e:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate:{
-            notEmpty: false
-        }
+    isstudent: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
     },
-    tel2e:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate:{
-            notEmpty: false
-        }
+    startdate: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
-    addresse:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate:{
-            notEmpty: false
-        }
+    enddate: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
-    surnamep:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate:{
-            notEmpty: false
-        }
+    enquerydate: {
+      type: DataTypes.DATE,
+      allowNull: true,
     },
-    forenamesp:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate:{
-            notEmpty: false,
-            len: [3, 100]
-        }
-    },
-    genderp:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate:{
-            notEmpty: false
-        }
-    },
-    relationshipp:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate:{
-            notEmpty: false
-        }
-    },
-    occupationp:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate:{
-            notEmpty: false,
-        }
-    },
-    emailp:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate:{
-            notEmpty: false
-        }
-    },
-    tel1p:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate:{
-            notEmpty: false
-        }
-    },
-    tel2p:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate:{
-            notEmpty: false
-        }
-    },
-    addressp:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate:{
-            notEmpty: false
-        }
-    },
-    nameo:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate:{
-            notEmpty: false
-        }
-    },
-    addresso:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate:{
-            notEmpty: false
-        }
-    },
-    tel1o:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate:{
-            notEmpty: false
-        }
-    },
-    emailo:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate:{
-            notEmpty: false,
-            len: [3, 100]
-        }
-    },
-    contacto:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate:{
-            notEmpty: false,
-            len: [3, 100]
-        }
-    },
-    tel2o:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate:{
-            notEmpty: false
-        }
-    },
-    isstudent:{
-        type: DataTypes.BOOLEAN,
-        allowNull: true,
-        validate:{
-            notEmpty: false,
-        }
-    },
-    startdate:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate:{
-            notEmpty: false,
-        }
-    },
-    enddate:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate:{
-            notEmpty: false,
-        }
-    },
-    enquerydate:{
-        type: DataTypes.DATE,
-        allowNull: true,
-        validate:{
-            notEmpty: false,
-        }
-    },
-    coursewish:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate:{
-            notEmpty: false,
-        }
+    coursewish: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     cpname: {
-        type: DataTypes.STRING,
-        allowNull: true
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     cpemail: {
-        type: DataTypes.STRING,
-        allowNull: true
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     cpphone: {
-        type: DataTypes.STRING,
-        allowNull: true
+      type: DataTypes.STRING,
+      allowNull: true,
     },
-    
-},{
-    freezeTableName: true
-})
+  },
+  {
+    freezeTableName: true,
+  }
+);
 
-Prospect.belongsTo(About, {foreignKey: 'about_aboutid'});
+Prospect.belongsTo(About, { foreignKey: "about_aboutid" });
 
-
-
-export default Prospect  
-
+export default Prospect;

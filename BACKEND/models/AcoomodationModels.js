@@ -1,42 +1,35 @@
 import { Sequelize } from "sequelize";
-import db from '../config/Database.js';
+import db from "../config/Database.js";
 
+const { DataTypes } = Sequelize;
 
-const  {DataTypes} = Sequelize;
-
-const Accomodation = db.define('accomodations', {
-    uuid:{
-        type: DataTypes.STRING,
-        defaultValue: DataTypes.UUIDV4,
-        allowNull: false,
-        validate: {
-            notEmpty: true
-        }
+const Accomodation = db.define(
+  "accomodations",
+  {
+    uuid: {
+      type: DataTypes.STRING,
+      defaultValue: DataTypes.UUIDV4,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
     },
-    accomodationname:{
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate:{
-            notEmpty: true,
-                }
+    accomodationname: {
+      type: DataTypes.STRING,
+      allowNull: false,
     },
-    accomodationprice:{
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        validate:{
-            notEmpty: true,
-                }
+    accomodationprice: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
-    description:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate:{
-            notEmpty: false,
-        }
+    description: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
-},{
-    freezeTableName: true
-})
+  },
+  {
+    freezeTableName: true,
+  }
+);
 
-
-export default Accomodation
+export default Accomodation;

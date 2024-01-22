@@ -1,4 +1,3 @@
-insert into registration (uuid, registrationname, registrationprice, createdAt, updatedAt) values ("uuid", "Registration Fee", 15000, "2022-10-20 20:17:04", "2022-10-20 20:17:04");
 
 CREATE TABLE courses_seq
 (
@@ -14,6 +13,7 @@ BEGIN
   SET NEW.coursecode = CONCAT('EVLI-', LPAD(LAST_INSERT_ID(), 2, '0'));
 END$$
 DELIMITER ;
+insert into registration (uuid, registrationname, registrationprice, createdAt, updatedAt) values ("uuid", "Registration Fee", 15000, "2022-10-20 20:17:04", "2022-10-20 20:17:04");
 
 
 CREATE TABLE students_seq

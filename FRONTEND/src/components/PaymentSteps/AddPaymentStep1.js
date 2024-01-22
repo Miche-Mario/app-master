@@ -1,68 +1,74 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { StepperContext } from '../../contexts/stepperContext';
-import { useDispatch, useSelector } from 'react-redux'
+import React, { useContext, useEffect, useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { StepperContext } from "../../contexts/stepperContext";
+import { useDispatch, useSelector } from "react-redux";
 
-import axios from 'axios';
-import './paymentstyle.css';
+import axios from "axios";
+import "./paymentstyle.css";
 const AddPaymentStep1 = ({ open, setOpen }) => {
   const [msg, setMsg] = useState("");
 
-
-  const { user} = useSelector(
-    (state) => state.auth
-  );
+  const { user } = useSelector((state) => state.auth);
 
   /////////////////////////////////////////////////////////////GET INVOICE/////////////////////////////////////
 
-  const [invoicedata, setInvoiceData] = useState([])
-  const [invoicecode, setInvoicecode] = useState()
-  const [invoicedatatrue, setInvoicedatatrue] = useState(false)
+  const [invoicedata, setInvoiceData] = useState([]);
+  const [invoicecode, setInvoicecode] = useState();
+  const [invoicedatatrue, setInvoicedatatrue] = useState(false);
 
-  const [prospectdata, setProspectData] = useState([])
-
+  const [prospectdata, setProspectData] = useState([]);
 
   const getInvoiceData = async (e) => {
-
     try {
-      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/getinvoice`, {
-        invoicecode: invoicecode
-      });
-      response.data && setInvoiceData(response.data)
-      response.data.length > 0 ? setInvoicedatatrue(true) : setInvoicedatatrue(false)
+      const response = await axios.post(
+        `${process.env.REACT_APP_BASE_URL}/getinvoice`,
+        {
+          invoicecode: invoicecode,
+        }
+      );
+      response.data && setInvoiceData(response.data);
+      response.data.length > 0
+        ? setInvoicedatatrue(true)
+        : setInvoicedatatrue(false);
 
-      const responsee = await axios.post(`${process.env.REACT_APP_BASE_URL}/prospectbyid`, {
-        prospectid: invoicecode
-      });
+      const responsee = await axios.post(
+        `${process.env.REACT_APP_BASE_URL}/prospectbyid`,
+        {
+          prospectid: invoicecode,
+        }
+      );
       responsee.data && setProspectData(responsee.data);
     } catch (error) {
       if (error.response) {
         setMsg(error.response.data.msg);
-        console.log(msg)
-        setInvoicedatatrue(false)
+        console.log(msg);
+        setInvoicedatatrue(false);
       }
     }
-  }
+  };
   console.log(prospectdata && prospectdata.prospectid);
   //////////////////////////////////SEND DATA //////////////////////////////
 
-  const { studentData, setStudentData } = useContext(StepperContext)
+  const { studentData, setStudentData } = useContext(StepperContext);
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setStudentData({ ...studentData, [name]: value })
-  }
-
+    setStudentData({ ...studentData, [name]: value });
+  };
 
   useEffect(() => {
-    setStudentData({ ...studentData, invoicedata: invoicedata[0], prospectdata: prospectdata })
-  }, [invoicedata, prospectdata])
+    setStudentData({
+      ...studentData,
+      invoicedata: invoicedata[0],
+      prospectdata: prospectdata,
+    });
+  }, [invoicedata, prospectdata]);
   ////////////////////////////////////////////SAVE STUDENT DATA/////////////////////////////////////////////////////////:
 
-  const [paymentmethodd, setPaymentmethodd] = useState('')
-  const [paymentmethoddetails, setPaymentMethoddetails] = useState('')
+  const [paymentmethodd, setPaymentmethodd] = useState("");
+  const [paymentmethoddetails, setPaymentMethoddetails] = useState("");
 
-  const [paymentStatus, setPaymentStatus] = useState('')
+  const [paymentStatus, setPaymentStatus] = useState("");
 
   var currentDate = new Date();
 
@@ -71,126 +77,219 @@ const AddPaymentStep1 = ({ open, setOpen }) => {
   var dateOfMonth = currentDate.getDate();
   if (dateOfMonth < 10) dateOfMonth = "0" + dateOfMonth;
   var year = currentDate.getFullYear();
-  var formattedDate = dateOfMonth + "/" + month + "/" + year + " " + currentDate.toLocaleTimeString();
+  var formattedDate =
+    dateOfMonth +
+    "/" +
+    month +
+    "/" +
+    year +
+    " " +
+    currentDate.toLocaleTimeString();
   console.log(formattedDate);
 
   const saveStudent = async (e) => {
     e.preventDefault();
-    if(paymentmethodd ==="" || studentData.paymentstatus  ==="") {
-      toast.error("Please insert all payment info")
-
+    if (paymentmethodd === "" || studentData.paymentstatus === "") {
+      toast.error("Please insert all payment info");
     } else {
-      if ((studentData.firstpayed > invoicedata[0].total) || (studentData.firstpayed < 0)) {
-        toast.error("Amount incorrect")
+      if (
+        studentData.firstpayed > invoicedata[0].total ||
+        studentData.firstpayed < 0
+      ) {
+        toast.error("Amount incorrect");
       } else {
-  
         try {
           await axios.post(`${process.env.REACT_APP_BASE_URL}/students`, {
-            surnameg: studentData.prospectdata.surnameg && studentData.prospectdata.surnameg,
-            forenamesg: studentData.prospectdata.forenamesg && studentData.prospectdata.forenamesg,
-            genderg: studentData.prospectdata.genderg && studentData.prospectdata.genderg,
-            dateofbirthg: studentData.prospectdata.dateofbirthg && studentData.prospectdata.dateofbirthg,
-            placeofbirthg: studentData.prospectdata.placeofbirthg && studentData.prospectdata.placeofbirthg,
-            citizenshipg: studentData.prospectdata.citizenshipg && studentData.prospectdata.citizenshipg,
-            occupationg: studentData.prospectdata.occupationg && studentData.prospectdata.occupationg,
-            emailg: studentData.prospectdata.emailg && studentData.prospectdata.emailg,
-            telhomeg: studentData.prospectdata.telhomeg && studentData.prospectdata.telhomeg,
-            telghanag: studentData.prospectdata.telghanag && studentData.prospectdata.telghanag,
-            addresshomeg: studentData.prospectdata.addresshomeg && studentData.prospectdata.addresshomeg,
-            addressghanag: studentData.prospectdata.addresshomeg && studentData.prospectdata.addresshomeg,
-            maritalg: studentData.prospectdata.maritalg && studentData.prospectdata.maritalg,
-            passportidg: studentData.prospectdata.passportidg && studentData.prospectdata.passportidg,
-            academicg: studentData.prospectdata.academicg && studentData.prospectdata.academicg,
-            noteg: studentData.prospectdata.noteg && studentData.prospectdata.noteg,
-            aboutidg: studentData.prospectdata.aboutidg && studentData.prospectdata.aboutidg,
+            surnameg:
+              studentData.prospectdata.surnameg &&
+              studentData.prospectdata.surnameg,
+            forenamesg:
+              studentData.prospectdata.forenamesg &&
+              studentData.prospectdata.forenamesg,
+            genderg:
+              studentData.prospectdata.genderg &&
+              studentData.prospectdata.genderg,
+            dateofbirthg:
+              studentData.prospectdata.dateofbirthg &&
+              studentData.prospectdata.dateofbirthg,
+            placeofbirthg:
+              studentData.prospectdata.placeofbirthg &&
+              studentData.prospectdata.placeofbirthg,
+            citizenshipg:
+              studentData.prospectdata.citizenshipg &&
+              studentData.prospectdata.citizenshipg,
+            occupationg:
+              studentData.prospectdata.occupationg &&
+              studentData.prospectdata.occupationg,
+            emailg:
+              studentData.prospectdata.emailg &&
+              studentData.prospectdata.emailg,
+            telhomeg:
+              studentData.prospectdata.telhomeg &&
+              studentData.prospectdata.telhomeg,
+            telghanag:
+              studentData.prospectdata.telghanag &&
+              studentData.prospectdata.telghanag,
+            addresshomeg:
+              studentData.prospectdata.addresshomeg &&
+              studentData.prospectdata.addresshomeg,
+            addressghanag:
+              studentData.prospectdata.addresshomeg &&
+              studentData.prospectdata.addresshomeg,
+            maritalg:
+              studentData.prospectdata.maritalg &&
+              studentData.prospectdata.maritalg,
+            passportidg:
+              studentData.prospectdata.passportidg &&
+              studentData.prospectdata.passportidg,
+            academicg:
+              studentData.prospectdata.academicg &&
+              studentData.prospectdata.academicg,
+            noteg:
+              studentData.prospectdata.noteg && studentData.prospectdata.noteg,
+            aboutidg:
+              studentData.prospectdata.aboutidg &&
+              studentData.prospectdata.aboutidg,
             passportphotographg: studentData.prospectdata.passportphotographg,
-            idscang: studentData.prospectdata.idscang && studentData.prospectdata.idscang,
-            surnamee: studentData.prospectdata.surnamee && studentData.prospectdata.surnamee,
-            forenamese: studentData.prospectdata.forenamese && studentData.prospectdata.forenamese,
-            gendere: studentData.prospectdata.gendere && studentData.prospectdata.gendere,
-            relationshipe: studentData.prospectdata.relationshipe && studentData.prospectdata.relationshipe,
-            occupatione: studentData.prospectdata.occupatione && studentData.prospectdata.occupatione,
-            emaile: studentData.prospectdata.emaile && studentData.prospectdata.emaile,
-            tel1e: studentData.prospectdata.tel1e && studentData.prospectdata.tel1e,
-            tel2e: studentData.prospectdata.tel2e && studentData.prospectdata.tel2e,
-            addresse: studentData.prospectdata.addresse && studentData.prospectdata.addresse,
-            surnamep: studentData.prospectdata.surnamep && studentData.prospectdata.surnamep,
-            forenamesp: studentData.prospectdata.forenamesp && studentData.prospectdata.forenamesp,
-            genderp: studentData.prospectdata.genderp && studentData.prospectdata.genderp,
-            relationshipp: studentData.prospectdata.relationshipp && studentData.prospectdata.relationshipp,
-            occupationp: studentData.prospectdata.occupationp && studentData.prospectdata.occupationp,
-            emailp: studentData.prospectdata.emailp && studentData.prospectdata.emailp,
-            tel1p: studentData.prospectdata.tel1p && studentData.prospectdata.tel1p,
-            tel2p: studentData.prospectdata.tel2p && studentData.prospectdata.tel2p,
-            addressp: studentData.prospectdata.addressp && studentData.prospectdata.addressp,
-            nameo: studentData.prospectdata.nameo && studentData.prospectdata.nameo,
-            addresso: studentData.prospectdata.addresso && studentData.prospectdata.addresso,
-            tel1o: studentData.prospectdata.tel1o && studentData.prospectdata.tel1o,
-            emailo: studentData.prospectdata.emailo && studentData.prospectdata.emailo,
-            contacto: studentData.prospectdata.contacto && studentData.prospectdata.contacto,
-            tel2o: studentData.prospectdata.tel2o && studentData.prospectdata.tel2o,
+            idscang:
+              studentData.prospectdata.idscang &&
+              studentData.prospectdata.idscang,
+            surnamee:
+              studentData.prospectdata.surnamee &&
+              studentData.prospectdata.surnamee,
+            forenamese:
+              studentData.prospectdata.forenamese &&
+              studentData.prospectdata.forenamese,
+            gendere:
+              studentData.prospectdata.gendere &&
+              studentData.prospectdata.gendere,
+            relationshipe:
+              studentData.prospectdata.relationshipe &&
+              studentData.prospectdata.relationshipe,
+            occupatione:
+              studentData.prospectdata.occupatione &&
+              studentData.prospectdata.occupatione,
+            emaile:
+              studentData.prospectdata.emaile &&
+              studentData.prospectdata.emaile,
+            tel1e:
+              studentData.prospectdata.tel1e && studentData.prospectdata.tel1e,
+            tel2e:
+              studentData.prospectdata.tel2e && studentData.prospectdata.tel2e,
+            addresse:
+              studentData.prospectdata.addresse &&
+              studentData.prospectdata.addresse,
+            surnamep:
+              studentData.prospectdata.surnamep &&
+              studentData.prospectdata.surnamep,
+            forenamesp:
+              studentData.prospectdata.forenamesp &&
+              studentData.prospectdata.forenamesp,
+            genderp:
+              studentData.prospectdata.genderp &&
+              studentData.prospectdata.genderp,
+            relationshipp:
+              studentData.prospectdata.relationshipp &&
+              studentData.prospectdata.relationshipp,
+            occupationp:
+              studentData.prospectdata.occupationp &&
+              studentData.prospectdata.occupationp,
+            emailp:
+              studentData.prospectdata.emailp &&
+              studentData.prospectdata.emailp,
+            tel1p:
+              studentData.prospectdata.tel1p && studentData.prospectdata.tel1p,
+            tel2p:
+              studentData.prospectdata.tel2p && studentData.prospectdata.tel2p,
+            addressp:
+              studentData.prospectdata.addressp &&
+              studentData.prospectdata.addressp,
+            nameo:
+              studentData.prospectdata.nameo && studentData.prospectdata.nameo,
+            addresso:
+              studentData.prospectdata.addresso &&
+              studentData.prospectdata.addresso,
+            tel1o:
+              studentData.prospectdata.tel1o && studentData.prospectdata.tel1o,
+            emailo:
+              studentData.prospectdata.emailo &&
+              studentData.prospectdata.emailo,
+            contacto:
+              studentData.prospectdata.contacto &&
+              studentData.prospectdata.contacto,
+            tel2o:
+              studentData.prospectdata.tel2o && studentData.prospectdata.tel2o,
             isstudent: studentData && true,
-            about_aboutid: studentData.prospectdata.aboutidg && studentData.prospectdata.aboutidg,
-            startdate: studentData.prospectdata.startdate && studentData.prospectdata.startdate,
-            enddate: studentData.prospectdata.enddate && studentData.prospectdata.enddate,
+            about_aboutid:
+              studentData.prospectdata.aboutidg &&
+              studentData.prospectdata.aboutidg,
+            startdate:
+              studentData.prospectdata.startdate &&
+              studentData.prospectdata.startdate,
+            enddate:
+              studentData.prospectdata.enddate &&
+              studentData.prospectdata.enddate,
             prospectid: invoicecode,
             total: invoicedata && invoicedata[0].total,
             first: studentData.firstpayed !== 0 && studentData.firstpayed,
-            balance: invoicedata && invoicedata[0].total === parseInt(studentData.firstpayed) ? 0 : (invoicedata[0].total - studentData.firstpayed),
+            balance:
+              invoicedata &&
+              invoicedata[0].total === parseInt(studentData.firstpayed)
+                ? 0
+                : invoicedata[0].total - studentData.firstpayed,
             invoiceid: invoicedata && invoicedata[0].id,
-            code: invoicedata && invoicedata[0].studdiscount.lecode !== "" && invoicedata[0].studdiscount.lecode,
+            code:
+              invoicedata &&
+              invoicedata[0].studdiscount.lecode !== "" &&
+              invoicedata[0].studdiscount.lecode,
             paymentmethod: paymentmethodd,
-            timepayment: [{ date: formattedDate, amount: studentData.firstpayed !== 0 && studentData.firstpayed, details:  paymentmethoddetails}],
+            timepayment: [
+              {
+                date: formattedDate,
+                amount: studentData.firstpayed !== 0 && studentData.firstpayed,
+                details: paymentmethoddetails,
+              },
+            ],
             courselist: invoicedata && invoicedata[0].courselist,
-           status: studentData.paymentstatus && studentData.paymentstatus,
-            user: user.id
+            status: studentData.paymentstatus && studentData.paymentstatus,
+            user: user.id,
           });
-          setOpen(true)
-          toast.success("Payment Well Saved")
-  
+          setOpen(true);
+          toast.success("Payment Well Saved");
         } catch (error) {
-          toast.error(error.response.data.msg)
-        } 
+          toast.error(error.response.data.msg);
+        }
       }
     }
-
-  }
+  };
 
   console.log(paymentmethoddetails);
 
   /////////////////////////////////////////////////////////////GET PAYMENT METHOD/////////////////////////////////////
 
-
-
-
-
   const [paymentmethod, setPaymentMethod] = useState([]);
 
   const getPaymentMethods = async () => {
-    const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/paymentmethod`);
-    setPaymentMethod(response.data)
-  }
+    const response = await axios.get(
+      `${process.env.REACT_APP_BASE_URL}/paymentmethod`
+    );
+    setPaymentMethod(response.data);
+  };
 
-
-  
   const [paymentstatuss, setPaymentStatuss] = useState([]);
 
   const getPaymentStatus = async () => {
-    const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/paymentstatuss`);
-    setPaymentStatuss(response.data)
-  }
-
-
-
+    const response = await axios.get(
+      `${process.env.REACT_APP_BASE_URL}/paymentstatuss`
+    );
+    setPaymentStatuss(response.data);
+  };
 
   useEffect(() => {
     getPaymentMethods();
 
     getPaymentStatus();
-  }, [])
-
-
-
+  }, []);
 
   /////////////////////////////////////////////////////////////
   function separator(numb) {
@@ -199,73 +298,87 @@ const AddPaymentStep1 = ({ open, setOpen }) => {
     return str.join(".");
   }
 
-
   return (
-
-
-
     <>
-
-      <div className='mt-3 h-full'>
+      <div className="mt-3 h-full">
         <ToastContainer style={{ fontSize: 20 }} position="top-right" />
 
-        <div className=' ml-32 '>
-          <div className='flex items-center ml-4 ' >
-            <p className={`text-xl font-medium ${invoicedatatrue == true && "text-green-500"}`}>INVOICE ID</p>
-            <input type='text' className={`ml-4 w-48 p-2 border ${invoicedatatrue == true && " text-2xl focus:border-green-500 border-green-500"} `}
+        <div className=" ml-32 ">
+          <div className="flex items-center ml-4 ">
+            <p
+              className={`text-xl font-medium ${
+                invoicedatatrue == true && "text-green-500"
+              }`}
+            >
+              INVOICE ID
+            </p>
+            <input
+              type="text"
+              className={`ml-4 w-48 p-2 border ${
+                invoicedatatrue == true &&
+                " text-2xl focus:border-green-500 border-green-500"
+              } `}
               value={invoicecode}
-              onKeyUpCapture={(e) => { getInvoiceData(e); setInvoicecode(e.target.value) }}
+              onKeyUpCapture={(e) => {
+                getInvoiceData(e);
+                setInvoicecode(e.target.value);
+              }}
               onChange={(e) => setInvoicecode(e.target.value)}
             />
           </div>
         </div>
 
-
         <div>
           <div className="containerr mt-3">
-
             <div className="body-sectionn">
-              {invoicedatatrue && <div className='mt-3'>
-                <div className='flex flex-row '>
-                  <div className='text-xl font-medium'>Received from:</div>
-                  <div className='ml-4 font-bold text-xl uppercase'>{prospectdata && prospectdata.forenamesg} {prospectdata && prospectdata.surnameg}</div>
+              {invoicedatatrue && (
+                <div className="mt-3">
+                  <div className="flex flex-row ">
+                    <div className="text-xl font-medium">Received from:</div>
+                    <div className="ml-4 font-bold text-xl uppercase">
+                      {prospectdata && prospectdata.forenamesg}{" "}
+                      {prospectdata && prospectdata.surnameg}
+                    </div>
+                  </div>
+                  <div className="ml-[9.5rem] text-lg">
+                    {invoicedata && invoicedata[0].courselist.length > 0 && (
+                      <p>
+                        <span className=" text-lg">Course:</span>
+                        <span className="ml-3 mt-1 text-md">
+                          {invoicedata &&
+                            invoicedata[0].courselist.length > 0 &&
+                            invoicedata[0].courselist[0].laduration + " "}
+                          Months of English
+                          {invoicedata &&
+                            invoicedata[0].courselist.length > 1 &&
+                            " + " + invoicedata[0].courselist[1].lecoursename}
+                        </span>
+                      </p>
+                    )}
+                    <p>
+                      <span className=" text-lg">PURCHASE:</span>
+                      <span className="ml-3 mt-1 text-md lowercase">
+                        {invoicedata &&
+                          invoicedata[0].purchaselist.length > 0 &&
+                          invoicedata[0].purchaselist
+                            .map((objet) => objet.purchasedescription)
+                            .join(" + ")}
+                      </span>
+                    </p>
+
+                    <p>
+                      <span className=" text-lg">ACCOMMODATION:</span>
+                      <span className="ml-3 mt-1 text-md lowercase">
+                        {invoicedata &&
+                          invoicedata[0].purchaselist.length > 0 &&
+                          invoicedata[0].accolist
+                            .map((objet) => objet.accodescription)
+                            .join(" + ")}
+                      </span>
+                    </p>
+                  </div>
                 </div>
-                <div className='ml-[9.5rem] text-lg'>
-                {invoicedata && invoicedata[0].courselist.length > 0 &&
-                  <p>
-                    <span className=' text-lg'>Course:</span>
-                    <span className='ml-3 mt-1 text-md lowercase'>
-                    
-                      {invoicedata && invoicedata[0].courselist.length > 0 && invoicedata[0].courselist[0].laduration + " "} 
-                       Months of English
-                      {invoicedata && invoicedata[0].courselist.length > 1 && " + " + invoicedata[0].courselist[1].lecoursename}
-                  
-                    </span>
-                  </p>}
-                  <p>
-                    <span className=' text-lg'>PURCHASE:</span>
-                    <span className='ml-3 mt-1 text-md lowercase'>
-                    
-                      {invoicedata && invoicedata[0].purchaselist.length > 0 && invoicedata[0].purchaselist.map(objet => objet.purchasedescription).join(' + ')}
-                  
-                    </span>
-                  </p>
-
-                  <p>
-                    <span className=' text-lg'>ACCOMMODATION:</span>
-                    <span className='ml-3 mt-1 text-md lowercase'>
-                    
-                      {invoicedata && invoicedata[0].purchaselist.length > 0 && invoicedata[0].accolist.map(objet => objet.lacconame).join(' + ')}
-                  
-                    </span>
-                  </p>
-                  
-
-
-
-
-                </div>
-              </div>}
+              )}
               <br />
               <form>
                 <table className="table-bordered">
@@ -278,99 +391,147 @@ const AddPaymentStep1 = ({ open, setOpen }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {
-                      invoicedatatrue && invoicedata[0].registration.length >= 0 && invoicedata[0].registration.map((regis, index) => (
+                    {invoicedatatrue &&
+                      invoicedata[0].registration.length >= 0 &&
+                      invoicedata[0].registration.map((regis, index) => (
                         <tr key={index * (Math.random() * 3)}>
                           <td>1</td>
                           <td className="ww-32">{regis.registrationname}</td>
-                          <td>{regis.lecurrency} {separator(regis.regir)}</td>
-                          <td>{regis.lecurrency} {separator(regis.regir)}</td>
+                          <td>
+                            {regis.lecurrency} {separator(regis.regir)}
+                          </td>
+                          <td>
+                            {regis.lecurrency} {separator(regis.regir)}
+                          </td>
                         </tr>
-                      ))
+                      ))}
 
-                    }
-
-                    {
-                      invoicedatatrue && invoicedata[0].courselist.length >= 0 && invoicedata[0].courselist.map((course, index) => (
+                    {invoicedatatrue &&
+                      invoicedata[0].courselist.length >= 0 &&
+                      invoicedata[0].courselist.map((course, index) => (
                         <tr key={index * (Math.random() * 3)}>
                           <td>1</td>
                           <td>{course.coursedescription}</td>
-                          <td>{course.lecurrency} {separator(course.price)}</td>
-                          <td>{course.lecurrency} {separator(course.price)}</td>
+                          <td>
+                            {course.lecurrency} {separator(course.price)}
+                          </td>
+                          <td>
+                            {course.lecurrency} {separator(course.price)}
+                          </td>
                         </tr>
-                      ))
+                      ))}
 
-                    }
-
-                    {
-                      invoicedatatrue && invoicedata[0].examlist.length >= 0 && invoicedata[0].examlist.map((exam, index) => (
+                    {invoicedatatrue &&
+                      invoicedata[0].examlist.length >= 0 &&
+                      invoicedata[0].examlist.map((exam, index) => (
                         <tr key={index * (Math.random() * 3)}>
                           <td>1</td>
                           <td>{exam.examdescription}</td>
-                          <td>{exam.lecurrency} {separator(exam.examprice)}</td>
-                          <td>{exam.lecurrency} {separator(exam.examprice)}</td>
+                          <td>
+                            {exam.lecurrency} {separator(exam.examprice)}
+                          </td>
+                          <td>
+                            {exam.lecurrency} {separator(exam.examprice)}
+                          </td>
                         </tr>
-                      ))
+                      ))}
 
-                    }
-
-                    {
-                      invoicedatatrue && invoicedata[0].purchaselist.length >= 0 && invoicedata[0].purchaselist.map((pur, index) => (
+                    {invoicedatatrue &&
+                      invoicedata[0].purchaselist.length >= 0 &&
+                      invoicedata[0].purchaselist.map((pur, index) => (
                         <tr key={index * (Math.random() * 3)}>
                           <td>{pur.purchasetimes}</td>
                           <td>{pur.purchasedescription}</td>
-                          <td>{pur.lecurrency} {separator(pur.purchaseprice)}</td>
-                          <td>{pur.lecurrency} {separator(pur.purchaseprice)}</td>
+                          <td>
+                            {pur.lecurrency} {separator(pur.purchaseprice)}
+                          </td>
+                          <td>
+                            {pur.lecurrency} {separator(pur.purchaseprice)}
+                          </td>
                         </tr>
-                      ))
-
-                    }
-                    {
-                      invoicedatatrue && invoicedata[0].accolist.length >= 0 && invoicedata[0].accolist.map((acco, index) => (
+                      ))}
+                    {invoicedatatrue &&
+                      invoicedata[0].accolist.length >= 0 &&
+                      invoicedata[0].accolist.map((acco, index) => (
                         <tr key={index * (Math.random() * 3)}>
                           <td>{acco.acotimes}</td>
                           <td>{acco.accodescription}</td>
-                          <td>{acco.lecurrency} {separator(acco.accoprice)}</td>
-                          <td>{acco.lecurrency} {separator(acco.acotimes * acco.accoprice)}</td>
+                          <td>
+                            {acco.lecurrency} {separator(acco.accoprice)}
+                          </td>
+                          <td>
+                            {acco.lecurrency}{" "}
+                            {separator(acco.acotimes * acco.accoprice)}
+                          </td>
                         </tr>
-                      ))
+                      ))}
 
-                    }
-
-                    {
-                      invoicedatatrue && invoicedata[0].otherlist.length >= 0 && invoicedata[0].otherlist.map((other, index) => (
+                    {invoicedatatrue &&
+                      invoicedata[0].otherlist.length >= 0 &&
+                      invoicedata[0].otherlist.map((other, index) => (
                         <tr key={index * (Math.random() * 3)}>
                           <td>1</td>
                           <td>{other.otherfeedescription}</td>
-                          <td>{other.lecurrency} {separator(other.otherfeeprice)}</td>
-                          <td>{other.lecurrency} {separator(other.otherfeeprice)}</td>
+                          <td>
+                            {other.lecurrency} {separator(other.otherfeeprice)}
+                          </td>
+                          <td>
+                            {other.lecurrency} {separator(other.otherfeeprice)}
+                          </td>
                         </tr>
-                      ))
-
-                    }
+                      ))}
 
                     <tr>
-                      <td colspan="3" className="text-right">Subtotal:</td>
-                      <td className='font-bold'> {invoicedatatrue && invoicedata[0].currency.lecurrency} {invoicedatatrue && separator(invoicedata && invoicedata[0].subtotal)}</td>
+                      <td colspan="3" className="text-right">
+                        Subtotal:
+                      </td>
+                      <td className="font-bold">
+                        {" "}
+                        {invoicedatatrue &&
+                          invoicedata[0].currency.lecurrency}{" "}
+                        {invoicedatatrue &&
+                          separator(invoicedata && invoicedata[0].subtotal)}
+                      </td>
                     </tr>
                     <tr>
-                      <td colspan="3" className="text-right">Discount:</td>
-                      <td className='font-bold'> {invoicedatatrue && invoicedata[0].currency.lecurrency} {invoicedatatrue && invoicedata[0].discount ? invoicedata[0].discount : "0,00"}</td>
+                      <td colspan="3" className="text-right">
+                        Discount:
+                      </td>
+                      <td className="font-bold">
+                        {" "}
+                        {invoicedatatrue &&
+                          invoicedata[0].currency.lecurrency}{" "}
+                        {invoicedatatrue && invoicedata[0].discount
+                          ? invoicedata[0].discount
+                          : "0,00"}
+                      </td>
                     </tr>
                     <tr>
-                      <td colspan="3" className="text-right">Total:</td>
-                      <td className='font-bold'> {invoicedatatrue && invoicedata[0].currency.lecurrency} {invoicedatatrue && separator(invoicedata && invoicedata[0].total)}</td>
+                      <td colspan="3" className="text-right">
+                        Total:
+                      </td>
+                      <td className="font-bold">
+                        {" "}
+                        {invoicedatatrue &&
+                          invoicedata[0].currency.lecurrency}{" "}
+                        {invoicedatatrue &&
+                          separator(invoicedata && invoicedata[0].total)}
+                      </td>
                     </tr>
                     <tr>
-                      <td colspan="3" className="text-right">Amount Paid 1st:</td>
-                      <td className='font-bold flex justify-center items-center'>{invoicedatatrue && invoicedata[0].currency.lecurrency}
-                        <input type="number" className='p-1 border ml-1 border-red text-red w-28 text-center text-bold'
+                      <td colspan="3" className="text-right">
+                        Amount Paid 1st:
+                      </td>
+                      <td className="font-bold flex justify-center items-center">
+                        {invoicedatatrue && invoicedata[0].currency.lecurrency}
+                        <input
+                          type="number"
+                          className="p-1 border ml-1 border-red text-red w-28 text-center text-bold"
                           onChange={handleChange}
                           name="firstpayed"
                           value={studentData["firstpayed"] || ""}
                           required
                         />
-
                       </td>
                     </tr>
                     {/*   <tr>
@@ -388,9 +549,11 @@ const AddPaymentStep1 = ({ open, setOpen }) => {
                   </tbody>
                 </table>
                 <br />
-                <div className='flex flex-row items-center'>
+                <div className="flex flex-row items-center">
                   <h3 className="heading  w-[13rem]">Method of Payment:</h3>
-                  <select id="countries" className="ml-3 3bg-gray-50 mb-4   text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-48 p-2.5"
+                  <select
+                    id="countries"
+                    className="ml-3 3bg-gray-50 mb-4   text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-48 p-2.5"
                     required
                     onChange={(e) => setPaymentmethodd(e.target.value)}
                   >
@@ -399,68 +562,58 @@ const AddPaymentStep1 = ({ open, setOpen }) => {
                       <option value={pm.id}>{pm.paymentname}</option>
                     ))}
                   </select>
-
-
                 </div>
 
-
-
-
-
-                <div className='flex flex-row items-center'>
-                  <h3 className="heading w-[13rem]">Method of payment details:</h3>
-                  <textarea rows={4} cols={6} type="text"  className="ml-3 3bg-gray-50 mb-4   text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[15rem] p-1"
-                    name='paymentmethoddetails'
+                <div className="flex flex-row items-center">
+                  <h3 className="heading w-[13rem]">
+                    Method of payment details:
+                  </h3>
+                  <textarea
+                    rows={4}
+                    cols={6}
+                    type="text"
+                    className="ml-3 3bg-gray-50 mb-4   text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[15rem] p-1"
+                    name="paymentmethoddetails"
                     value={paymentmethoddetails}
                     onChange={(e) => setPaymentMethoddetails(e.target.value)}
-                  >        </textarea>
-
-
+                  >
+                    {" "}
+                  </textarea>
                 </div>
 
-
-
-
-
-
-                <div className='flex flex-row items-center'>
+                <div className="flex flex-row items-center">
                   <h3 className="heading  w-[13rem]">Payment Status:</h3>
-                  <select id="countries" className="ml-3 3bg-gray-50 mb-4   text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-48 p-2.5"
+                  <select
+                    id="countries"
+                    className="ml-3 3bg-gray-50 mb-4   text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-48 p-2.5"
                     required
                     onChange={handleChange}
                     name="paymentstatus"
-                    value={studentData["paymentstatus"] || ""}                  >
+                    value={studentData["paymentstatus"] || ""}
+                  >
                     <option></option>
                     {paymentstatuss.map((pm, index) => (
                       <option value={pm.id}>{pm.status}</option>
                     ))}
                   </select>
-
-
                 </div>
-                <div className='flex justify-end'>
+                <div className="flex justify-end">
                   <button
-
                     onClick={(e) => saveStudent(e)}
-                    className=' w-48 bg-blue-400 text-white  uppercase py-2 px-4
+                    className=" w-48 bg-blue-400 text-white  uppercase py-2 px-4
                                 rounded-xl font-semibold cursor-pointer  
-                              hover:bg-blue-600 hover:text-white transition duration-200 ease-in-out '
+                              hover:bg-blue-600 hover:text-white transition duration-200 ease-in-out "
                   >
                     Save
                   </button>
                 </div>
-
               </form>
-
             </div>
-
-
-
           </div>
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default AddPaymentStep1
+export default AddPaymentStep1;
